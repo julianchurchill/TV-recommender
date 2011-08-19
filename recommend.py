@@ -19,38 +19,44 @@ g_commented = "false" #change this value to true to comment out the radiotimes s
 ########################################
 
 url = 'http://www.radiotimes.com/tv/recommendations?genre='
-doc = urllib2.urlopen(url)
-soup = BeautifulSoup(doc)
-items = soup.findAll('article')
+try:
+	doc = urllib2.urlopen(url)
 
-titles = []
-unwanted = []
-
-record = open(filename, 'w')
-date = str(datetime.date.today())
-record.write("%s" %("#Radio Times highlights on "))
-record.write("%s" %(date))
-i = 0
-for item in items:
-	if (0<i<20):
-		title = (item.find('a')).string
-		titles.append(title)
-		channel = (item.find('dd')).string
-		description = (item.find('p')).string
-		if not title in unwanted_titles:
-			if not channel in unwanted_channels:
-				if rt_commented == "true":
-					text = "#Show: "+title
+	soup = BeautifulSoup(doc)
+	items = soup.findAll('article')
+	
+	titles = []
+	unwanted = []
+	
+	record = open(filename, 'w')
+	date = str(datetime.date.today())
+	record.write("%s" %("#Radio Times highlights on "))
+	record.write("%s" %(date))
+	i = 0
+	size = len(items)
+	d = (size - 2)
+	for item in items:
+		if (0<i<d):
+			title = (item.find('a')).string	
+			titles.append(title)
+			channel = (item.find('dd')).string
+			description = (item.find('p')).string
+			if not title in unwanted_titles:
+				if not channel in unwanted_channels:
+					if rt_commented == "true":
+						text = "#Show: "+title
+					else:
+						text = "Show: "+ title 
+					record.write("\n%s" %(text))
+					describe = "#" + description
+					record.write("\n%s" %(describe))
 				else:
-					text = "Show: "+ title
-				record.write("\n%s" %(text))
-				describe = "#" + description
-				record.write("\n%s" %(describe))
+					unwanted.append(title)
 			else:
-				unwanted.append(title)
-		else:
-			unwanted.append(title)
-	i = (i+1)
+				unwanted.append(title)				
+		i = (i+1)
+except doc.URLError:
+    print "Error opening RadioTimes website"
 
 #################
 day = datetime.date.isoweekday(datetime.date.today())

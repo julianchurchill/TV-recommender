@@ -16,6 +16,8 @@ unwanted_titles = ['CSI: Miami','The Apprentice',] #list shows you will never wa
 unwanted_channels = ['Sky2', 'Watch', 'Sky Living, HD', 'Sky Premiere', 'Sky Atlantic', 'Sky Arts 1, HD'] #list channels you don't receive
 rt_commented = "false" #change this value to true to comment out the radiotimes sugggestions
 g_commented = "false" #change this value to true to comment out the radiotimes sugggestions
+minstars = 4 #set the minimum number of stars required for films
+include_films = "true" 
 ########################################
 
 url = 'http://www.radiotimes.com/tv/recommendations?genre='
@@ -57,6 +59,49 @@ try:
 		i = (i+1)
 except doc.URLError:
     print "Error opening RadioTimes website"
+
+minstars = minstars - 1
+    
+if include_films == "true":    
+	furl = 'http://www.radiotimes.com/film/film-on-tv'
+	
+	fdoc = urllib2.urlopen(furl)
+
+	soup = BeautifulSoup(fdoc)
+	items = soup.findAll('article')
+	date = str(datetime.date.today())
+	i = 0
+	size = len(items)
+	d = (size - 2)
+	for item in items:
+		if (0<i<d):
+			title = (item.find('a')).string	
+			titles.append(title)
+			stars = (item.find('dd')).string
+			starrate = "# Stars:" + stars
+			stars = int(stars)
+			
+			if (stars>minstars):
+				channel = (item.find("dd", "channel")).string			
+				description = (item.find('p')).string
+				if not title in unwanted_titles:
+					if not channel in unwanted_channels:
+						if rt_commented == "true":
+							text = "#Show: "+title
+						else:
+							text = "Show: "+ title 
+						record.write("\n%s" %(text))
+						
+						record.write("\n%s" %(starrate))
+						describe = "#" + description
+						record.write("\n%s" %(describe))
+					else:
+						unwanted.append(title)
+				else:
+					unwanted.append(title)		
+			else:
+				unwanted.append(title)		
+		i = (i+1)
 
 #################
 day = datetime.date.isoweekday(datetime.date.today())

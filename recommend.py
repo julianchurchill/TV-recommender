@@ -51,7 +51,9 @@ try:
 					else:
 						text = "Show: "+ title 
 					record.write("\n%s" %(text))
-					describe = "#" + description
+					describe = "#" 
+					if description != None:
+						describe += description
 					record.write("\n%s" %(describe))
 				else:
 					unwanted.append(title)

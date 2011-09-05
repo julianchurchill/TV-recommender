@@ -57,7 +57,7 @@ try:
 			else:
 				unwanted.append(title)				
 		i = (i+1)
-except doc.URLError:
+except urllib2.URLError:
     print "Error opening RadioTimes website"
 
 minstars = minstars - 1

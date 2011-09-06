@@ -90,9 +90,9 @@ if include_films == "true":
 				if not title in unwanted_titles:
 					if not channel in unwanted_channels:
 						if rt_commented == "true":
-							text = "#Show: "+title
+							text = "# "+title
 						else:
-							text = "Show: "+ title 
+							text = title 
 						record.write("\n%s" %(text))
 						
 						record.write("\n%s" %(starrate))

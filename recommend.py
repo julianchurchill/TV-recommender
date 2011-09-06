@@ -41,6 +41,7 @@ try:
 	for item in items:
 		if (0<i<d):
 			title = (item.find('a')).string	
+			title = title.encode('ascii','ignore')
 			titles.append(title)
 			channel = (item.find('dd')).string
 			description = (item.find('p')).string

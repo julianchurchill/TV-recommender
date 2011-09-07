@@ -22,16 +22,13 @@ include_films = "true"
 ########################################
 
 url = 'http://www.radiotimes.com/tv/recommendations?genre='
+titles = []
+unwanted = []
+record = open(filename, 'w')
 try:
 	doc = urllib2.urlopen(url)
-
 	soup = BeautifulSoup(doc)
-	items = soup.findAll('article')
-	
-	titles = []
-	unwanted = []
-	
-	record = open(filename, 'w')
+	items = soup.findAll('article')	
 	date = str(datetime.date.today())
 	record.write("%s" %("#Radio Times highlights on "))
 	record.write("%s" %(date))
@@ -156,5 +153,5 @@ if day < 6:
 		record.write("\n%s" %(text))
 		record.write("\n%s" %(desc))
 
-	record.close()
+record.close()
 
